@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import TonConnectButton from './components/TonConnectButton.vue';
+import TonConnectButton from './components/TonConnectDemo.vue';
 
 export default {
   name: 'App',
@@ -24,8 +24,6 @@ export default {
 }
 
 header {
-  background-color: #42b983;
   padding: 20px;
-  color: white;
 }
 </style>
