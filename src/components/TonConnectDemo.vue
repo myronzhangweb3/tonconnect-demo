@@ -8,7 +8,7 @@
     </div>
     <div class="proof-info" v-if="proof">
       <div style="text-align: center;">
-        <hr class="light-divider" />
+        <hr class="light-divider"/>
         <h3>Proof Information:</h3>
       </div>
       <p><strong>Network:</strong> {{ proof.network }}</p>
@@ -59,6 +59,8 @@ export default {
         if (wallet) {
           if (wallet.connectItems?.tonProof && 'proof' in wallet.connectItems.tonProof) {
             proof.value = wallet.connectItems.tonProof.proof;
+            proof.value.network = wallet.account.chain;
+            console.log("proof.value:", proof.value)
           }
           walletAddress.value = wallet.account.address;
           connected.value = true;
@@ -92,6 +94,7 @@ export default {
 
       try {
         const result = await tonConnectUI.value.sendTransaction(transaction);
+        console.log("Tx result: ", result);
         alert('Transaction sent successfully');
       } catch (e) {
         console.error(e);
@@ -100,13 +103,14 @@ export default {
     };
 
     const handleBuildProof = async () => {
+      console.log("handleBuildProof")
       if (!connected.value) {
         alert('Please connect your wallet first');
         return;
       }
 
       try {
-        await tonConnectUI.value.setConnectRequestParameters({
+        tonConnectUI.value.setConnectRequestParameters({
           state: 'ready',
           value: {
             tonProof: proofMessageRef.value.value
@@ -114,14 +118,6 @@ export default {
         });
         await tonConnectUI.value.disconnect()
         await tonConnectUI.value.openModal()
-
-        tonConnectUI.value.onStatusChange(wallet => {
-          if (wallet && wallet.connectItems?.tonProof && 'proof' in wallet.connectItems.tonProof) {
-            proof.value.network = wallet.account.chain;
-            proof.value = wallet.connectItems.tonProof.proof;
-            console.log("proof.value:", proof.value)
-          }
-        });
       } catch (e) {
         console.error(e);
         alert('Signature failure');
